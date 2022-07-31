@@ -35,6 +35,6 @@ export const setVerification = async(formData,token)=>{
 
 export const fetchSellerWarrantyAddresses = async(wallet,token)=>{
     const serverInstance = createServerInstance(token);
-    const result = await serverInstance.get(`/order/warranty-contracts/${wallet}`);
+    const result = await serverInstance.get(`/warranty/${wallet}`);
     return result;
 }
