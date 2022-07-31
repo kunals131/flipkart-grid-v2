@@ -51,6 +51,22 @@ const Auth = ({props}) => {
       setError(false);
       e.preventDefault();
         console.log(form);
+
+        if (isLogin) {
+          if (!form.email) return setError('Enter a valid Email');
+          if (!form.password) return setError('Enter a valid password');
+        }
+        else {
+          if (!form.businessName) return setError('Enter a valid Business Name');
+          if (!form.confirmPassword) return setError('Enter a valid Confirm Password');
+          if (!form.password) return setError('Enter a valid password');
+          if (!form.email) return setError('Enter a valid Email');
+          if (!form.role) return setError('Enter a valid Role');
+          if (!form.phone) return setError('Enter a valid Phone Number');
+          if (!form.username) return setError('Enter a valid Full Name');
+          if (form.password!==form.confirmPassword) return setError('Passwords dont match')
+        }
+       
         if(isLogin) {
             dispatch(loginUser({email : form.email,password : form.password}, router,setError));
         }

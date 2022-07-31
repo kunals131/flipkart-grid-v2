@@ -37,6 +37,8 @@ const NFTCard = ({details})=>{
    )
 }
 
+
+
 const NFTFromSeller = ({seller})=>{
   const [nfts,setNfts] = useState([]);
   const [nftData,setNftData] = useState([]);
