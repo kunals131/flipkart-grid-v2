@@ -59,7 +59,9 @@ const Auth = ({props}) => {
           if (!form.password) return setError('Enter a valid password');
         }
         else {
+          if (form.role==='seller') {
           if (!form.businessName) return setError('Enter a valid Business Name');
+          }
           if (!form.confirmPassword) return setError('Enter a valid Confirm Password');
           if (!form.password) return setError('Enter a valid password');
           if (!form.email) return setError('Enter a valid Email');
