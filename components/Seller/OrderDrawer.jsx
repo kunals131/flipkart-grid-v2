@@ -1,16 +1,16 @@
 import { Drawer } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdClear, MdOutlinePayment } from "react-icons/md";
 import { TbPhoneCall } from "react-icons/tb";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import moment from 'moment'
 import Image from "next/image";
-import { updateOrderStatus } from "../../store/order/actions";
+import { mintNftOrder, updateOrderStatus } from "../../store/order/actions";
 import { useDispatch } from "react-redux";
-import {useNotification} from 'web3uikit';
-import {useWeb3Contract} from 'react-moralis'
+import {Loading, useNotification} from 'web3uikit';
+import {useMoralis, useWeb3Contract} from 'react-moralis'
 import WarrantyABI from '../../constants/WarrantyNFTABI.json';
-
+import { ethers } from "ethers";
 const OrderItem = ({details}) => {
   
   return (
@@ -32,7 +32,11 @@ const OrderItem = ({details}) => {
 const OrderDrawer = ({ isOpen, handleClose,data }) => {
   const dispatch = useDispatch();
   const notificationDispatch = useNotification();
-  const [status,setStatus] = useState(data.orderStatus)
+  const [status,setStatus] = useState(data.orderStatus);
+  const {isWeb3Enabled} = useMoralis();
+
+
+
   const handleChange = (e)=>{
     if (status==='delivered') {
       notificationDispatch({
@@ -53,7 +57,7 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
       orderId : data.orderId,
       activeTokenURI : data.activeTokenURI,
       expireTokenURI : data.expireTokenURI,
-      expiry : 100,
+      expiry : parseInt(data.product.warranty)*30*24*60*60 || 200
     },
   });
 
@@ -63,7 +67,7 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
       console.log(e);
       notificationDispatch({
         type : 'success',
-        message : `Order ${data.orderId} has been updated to ${status}`,
+        message : `Order ${data.orderId} has been updated to ${status} Please wait for a few seconds till the NFT is minted`,
         title : 'Status Update',
         position : 'topR'
       })
@@ -89,7 +93,38 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
       handleSuccess();
     }
   }
- 
+
+  useEffect(()=>{
+    if (isWeb3Enabled) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const nft = new ethers.Contract(
+        data.seller.warrantyAddress,
+        WarrantyABI,
+        provider
+      );
+
+      nft.on('NFTMinted', (tokenId,orderId)=>{
+       
+
+        if (!data.isNftMinted) {
+        dispatch(mintNftOrder(orderId.toString(),tokenId.toString()));
+        console.log(tokenId,orderId)
+        notificationDispatch({
+          type : 'success',
+          message : `NFT Minted whose token Id is ${tokenId} with orderId ${orderId}`,
+          title : 'Status Update',
+          position : 'topR'
+        })
+      }
+      })
+    }
+
+      // return ()=>nft.off('NFTMinted')
+      
+  }, [isWeb3Enabled]);
+  
+
+
   return (
     <div>
       <Drawer open={isOpen} onClose={handleClose} anchor={"right"}>

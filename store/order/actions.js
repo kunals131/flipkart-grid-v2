@@ -90,6 +90,7 @@ export const mintNftOrder = (id,tokenId,dispatchNotification)=>async(dispatch,ge
             title : 'Order Update',
             position : 'topR'
         })
+        setFetchLoading(false);
     }catch(err) {
         console.log(err);
     }finally {

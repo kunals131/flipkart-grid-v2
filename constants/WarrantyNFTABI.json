@@ -96,9 +96,9 @@
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
       }
     ],
     "name": "NFTMinted",

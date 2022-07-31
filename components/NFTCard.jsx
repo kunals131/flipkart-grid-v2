@@ -20,7 +20,8 @@ const NFTCard = ({data})=>{
       const handleSuccess = async(e)=>{
         setNftURI(e);
         try {
-        const result = await axios.get(`https://ipfs.io/${e.replace("ipfs://","ipfs/")}`, {timeout : '5000'});
+        setLoading(true);
+        const result = await axios.get(`https://ipfs.io/${e.replace("ipfs://","ipfs/")}`);
         setTokenData(result.data);
         setLoading(false);
         }catch(err) {

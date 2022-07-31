@@ -11,6 +11,7 @@ import WarrantyABI from '../../../constants/WarrantyNFTABI.json'
 import {useDispatch} from 'react-redux';
 import { mintNftOrder } from "../../../store/order/actions";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
 
 export const getServerSideProps = async(ctx) => {
   const auth = verifyAuthentication(ctx.req);
@@ -89,6 +90,26 @@ const Order = ({order,user}) => {
     fetchTokenURI();
     }
   }, [order, isWeb3Enabled])
+
+  useEffect(()=>{
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const nft = new ethers.Contract(
+        order.seller.warrantyAddress,
+        WarrantyABI,
+        provider
+      );
+      
+      nft.on('NFTMinted', async(tokenId,orderId)=>{
+        if (!order.isNftMinted) {
+        dispatch(mintNftOrder(orderId.toString(),tokenId.toString(), dispatchNotification));
+        const tokenLink = await tokenURI({
+          onSuccess : (e)=>setNFTURI(e),
+          onError :(err)=>console.log(err)
+        });
+      }
+      })
+  }, []);
+ 
 
 
   const dispatchNotification = useNotification();
@@ -192,9 +213,6 @@ const Order = ({order,user}) => {
         })
       }
     })
-  
-
-    
   }
   const handleGoToNFT = ()=>{
     if (nftURI) {
@@ -282,7 +300,7 @@ const Order = ({order,user}) => {
             {order.isNftMinted?<div>
               <div className="text-flipkartBlue">NFT has already been minted! {order.NFTUri}</div>
               <Button disabled={nftLoading} variant="outlined" onClick={handleGoToNFT}>{nftLoading?'Loading...':'Go to NFT'}</Button>
-            </div>:<div><Button variant="outlined" onClick={handleClaimWarranty}>Claim NFT</Button></div>}
+            </div>:<div className="">NFT has not been minted yet.. Please try again later!</div>}
 
           </div>:<div>Order has not been delivered yet..</div>}
 
