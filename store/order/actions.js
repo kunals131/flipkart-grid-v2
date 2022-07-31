@@ -50,7 +50,15 @@ export const placeOrder = (form, setStep, notificationDispatch)=>async(dispatch,
             
         }
     }catch(err) {
-        console.log(err);
+        if (notificationDispatch) {
+            notificationDispatch({
+                type : 'error',
+                message : err?.response?.data?.message || 'Something went wrong!',
+                title : 'Place Order',
+                position : 'topR'
+              })
+            
+        }
     }finally {
         dispatch(setOrderLoading(false));
     }
