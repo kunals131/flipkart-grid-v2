@@ -30,14 +30,26 @@ export const setCart = (items)=>{
     }
 }
 
-export const addItemToCart = (item)=>async(dispatch,getState)=>{
+export const addItemToCart = (item,dispatchNotification)=>async(dispatch,getState)=>{
     try {
         dispatch(setLoading(item._id));
         const result = await addItemToCartAPI(item._id);
         // console.log(result.data);
         dispatch(addItemToCartState(item));
+        dispatchNotification({
+            type : 'success',
+            message : `${item.name} has been added to your cart`,
+            title : 'Cart Updated',
+            position : 'topR'
+        })
     }catch(err){
         console.log(err);
+        dispatchNotification({
+            type : 'error',
+            message : `Something went wrong!`,
+            title : 'Cart Updated',
+            position : 'topR'
+        })
         if(err.response.status === 401){
             dispatch(logoutUser());
         }
@@ -59,14 +71,27 @@ export const fetchAllCartItems = ()=>async(dispatch,getState)=>{
     }
 }
 
-export const removeItemFromCart = (item)=>async(dispatch,getState)=>{
+export const removeItemFromCart = (item,dispatchNotification)=>async(dispatch,getState)=>{
     try {
         dispatch(setLoading(item._id));
         const result = await removeCartItemAPI(item._id);
         // console.log(result.data);
         dispatch(removeItemFromCartState(item));
+        dispatchNotification({
+            type : 'success',
+            message : `${item.name} has been removed from your cart`,
+            title : 'Cart Updated',
+            position : 'topR'
+        })
+        
     }catch(err){
         console.log(err);
+        dispatchNotification({
+            type : 'error',
+            message : `Something went wrong!`,
+            title : 'Cart Updated',
+            position : 'topR'
+        })
         if(err.response.status === 401){
             dispatch(logoutUser());
         }

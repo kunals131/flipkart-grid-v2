@@ -4,6 +4,7 @@ import Image from "next/image";
 import {AiFillStar} from 'react-icons/ai';
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart, removeItemFromCart } from "../../store/cart/actions";
+import { useNotification } from "web3uikit";
 
 const Rating = ()=>{
     return (
@@ -21,12 +22,13 @@ const Product = ({productDetails}) => {
   const {loading,items} = useSelector(state=>state.cart);
   const isIncluded =  items?.map(it=>it._id).includes(productDetails._id);
   const dispatch = useDispatch();
+  const dispatchNotification = useNotification();
   const handleCart = ()=>{
     if (isIncluded) {
-      dispatch(removeItemFromCart(productDetails));
+      dispatch(removeItemFromCart(productDetails,dispatchNotification));
     }
     else {
-      dispatch(addItemToCart(productDetails));
+      dispatch(addItemToCart(productDetails,dispatchNotification));
     }
   }
   return (
