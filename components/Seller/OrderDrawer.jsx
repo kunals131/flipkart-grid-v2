@@ -181,7 +181,7 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="font-[600]">Warranty : </div>
-                    <div className="">{data.product.warranty} years</div>
+                    <div className="">{data.product.warranty} Months</div>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="font-[600]">Customer Wallet Address : </div>

@@ -42,7 +42,7 @@ const ProductItem = ({details})=>{
                   <div className='font-[600] text-sm'>{details.name}</div>       
           </div>
           <div className=''>{details.description.slice(0,150)}</div>
-          <div className=' flex justify-end w-full px-3 py-[3px] h-fit rounded-md text-sm cursor-pointer'>{details.warranty} year</div>
+          <div className=' flex justify-end w-full px-3 py-[3px] h-fit rounded-md text-sm cursor-pointer'>{details.warranty} Months</div>
           <div className='flex justify-end'>{details.type}</div>
           <div className='text-green-600 flex justify-end'>₹ {details.cost}</div>
       </div>
