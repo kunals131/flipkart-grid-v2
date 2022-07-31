@@ -16,7 +16,7 @@ export const setAuthDetails = (data)=>{
     }
 }
 
-export const loginUser = (formData,router)=> async (dispatch,getState)=>{
+export const loginUser = (formData,router,setError)=> async (dispatch,getState)=>{
     try {
         dispatch(setAuthLoading(true));
         const userData = await loginUserAPI(formData);
@@ -25,6 +25,8 @@ export const loginUser = (formData,router)=> async (dispatch,getState)=>{
         router.push('/');
     }catch(err) {
         console.log(err);
+        setError(err?.response?.data?.message || 'Something went wrong! Try again');
+        
     } finally {
         dispatch(setAuthLoading(false));
     }
@@ -53,13 +55,21 @@ export const logoutUser = (router)=>async(dispatch,getState)=>{
 
 // export const setUserData = (formData,router)=>async (dispatch,getState)
 
-export const signUpUser = (formData)=>async(dispatch,getState)=>{
+export const signUpUser = (formData, setError, dispatchNotification,setIsLogin)=>async(dispatch,getState)=>{
     try {
         dispatch(setAuthLoading(true));
         const result = await signUpUserAPI(formData);
         console.log(result);
+        dispatchNotification({
+            type : 'success',
+            message : 'Signed up successfully! Please Login',
+            title : 'Authentication',
+            position : 'topR'
+        })
+        setIsLogin(true)
     }catch(err) {
         console.log(err);
+        setError(err?.response?.data?.message || 'Something went wrong! Try again');
     } finally {
         dispatch(setAuthLoading(false));
     }

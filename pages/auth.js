@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FlipkartIcon from '../public/assets/icon.svg';
 import WhiteLogo from '../public/assets/whitelogo.svg';
 import Image from 'next/image'
@@ -11,7 +11,7 @@ import {useRouter} from 'next/router';
 import { checkAuthAPI } from '../APIs/auth';
 import { verifyAuthentication } from '../utils/verifyAuth';
 import {useSelector} from 'react-redux';
-
+import { useNotification } from 'web3uikit';
 
 export const getServerSideProps = (ctx) => {
   const auth = verifyAuthentication(ctx.req);
@@ -28,6 +28,7 @@ export const getServerSideProps = (ctx) => {
 };
 
 const Auth = ({props}) => {
+  const dispatchNotification = useNotification();
     const [isLogin,setIsLogin] = useState(true);
     const {loading} = useSelector(state=>state.auth);
     const [form,setForm] = useState({
@@ -43,27 +44,31 @@ const Auth = ({props}) => {
     const [error,setError] = useState('');
     const dispatch = useDispatch();
     const handleChange = (e)=>{
+      setError(false);
         setForm(prev=>({...prev,[e.target.name] : e.target.value}));
     }
     const handleSubmit = (e)=>{
+      setError(false);
       e.preventDefault();
         console.log(form);
         if(isLogin) {
-            dispatch(loginUser({email : form.email,password : form.password}, router));
+            dispatch(loginUser({email : form.email,password : form.password}, router,setError));
         }
         else {
-            dispatch(signUpUser(form));
+            dispatch(signUpUser(form,setError, dispatchNotification, setIsLogin));
         }
-
     }
+    useEffect(()=>{
+      setError(false);
+    },[isLogin])
   return (
     <div className='w-full h-[100vh]  px-12 flex items-center'>
         <div>
         <div className='text-3xl flex items-center gap-4 font-[500] text-textPrimary'>
-        <FiUnlock size={36} className='text-flipkartBlue' />
-        <div>{isLogin?'Login':'Sign Up'}</div>
+        <FiUnlock size={36} className={`${error?'text-red-600':'text-flipkartBlue'}`} />
+        <div className={`${error?'text-red-600':''}`}>{error?'Error':isLogin?'Login':'Sign Up'}</div>
         </div>
-        <div className='mt-3 text-gray-400'>Get your orders, Reccomendations & wishlist items</div>
+        <div className={`mt-3 ${error?'text-red-600':'text-gray-400'} `}>{!error?'Get your orders, Reccomendations & wishlist items':error}</div>
 
         <form className={`${isLogin?'w-[380px]':'w-[450px]'} transition-all mt-6  space-y-4`}>
             {!isLogin&& <InputField value={form.username} onChange={handleChange} name='username' label={'Full Name'} placeholder='Enter your Full Name' />}
