@@ -27,19 +27,21 @@ export const getServerSideProps = (ctx) => {
   };
 };
 
+const initalState = {
+  username : '',
+  email : '',
+  password : '',
+  confirmPassword : '',
+  businessName : '',
+  role : 'customer',
+  phone : '',
+}
+
 const Auth = ({props}) => {
   const dispatchNotification = useNotification();
     const [isLogin,setIsLogin] = useState(true);
     const {loading} = useSelector(state=>state.auth);
-    const [form,setForm] = useState({
-        username : '',
-        email : '',
-        password : '',
-        confirmPassword : '',
-        businessName : '',
-        role : 'customer',
-        phone : '',
-    })
+    const [form,setForm] = useState(initalState)
     const router = useRouter();
     const [error,setError] = useState('');
     const dispatch = useDispatch();
@@ -76,6 +78,7 @@ const Auth = ({props}) => {
     }
     useEffect(()=>{
       setError(false);
+      setForm(initalState)
     },[isLogin])
   return (
     <div className='w-full h-[100vh]  px-12 flex items-center'>
@@ -88,7 +91,7 @@ const Auth = ({props}) => {
 
         <form className={`${isLogin?'w-[380px]':'w-[450px]'} transition-all mt-6  space-y-4`}>
             {!isLogin&& <InputField value={form.username} onChange={handleChange} name='username' label={'Full Name'} placeholder='Enter your Full Name' />}
-            <InputField value={form.email} onChange={handleChange} name='email' label={'Email'} placeholder='Enter your Email' />
+            <InputField type="email" value={form.email} onChange={handleChange} name='email' label={'Email'} placeholder='Enter your Email' />
             {!isLogin&& <InputField value={form.phone} onChange={handleChange} name='phone' label={'Phone Number'} placeholder='Enter your phone Number' />}
             <div className='flex items-center gap-2'>
             {!isLogin&& <SelectInput value={form.role} name='role' onChange={handleChange} label={'Role'} placeholder='Enter your phone Number' />}
