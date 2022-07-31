@@ -6,7 +6,9 @@ import { verifyAuthentication } from '../../utils/verifyAuth';
 import WarrantyABI from '../../constants/WarrantyNFTABI.json';
 import { fetchSellerWarrantyAddresses } from '../../APIs/auth';
 import { sellerAddress } from '../../constants/sellerAddresses';
+import { CreditCard } from 'web3uikit';
 import axios from 'axios';
+import Image from 'next/image';
 export const getServerSideProps = async(ctx) => {
   const auth = verifyAuthentication(ctx.req);
   if (auth.state) {
@@ -24,6 +26,16 @@ export const getServerSideProps = async(ctx) => {
   }
 };
 
+
+const NFTCard = ({details})=>{
+  return (
+    <div className=''>
+    <div className='w-[350px] h-[300px] relative rounded-xl'>
+      <Image src={details.image} layout='fill'  objectFit='contain'/>
+    </div>
+    </div>
+   )
+}
 
 const NFTFromSeller = ({seller})=>{
   const [nfts,setNfts] = useState([]);
@@ -68,8 +80,8 @@ const NFTFromSeller = ({seller})=>{
   return (
     <div className=''>
       <div className='text-xl font-[600]'>Warranty of Products Bought From seller {seller}</div>
-      <div className='mt-5'>
-        {nftData.map((n,idx)=><div key={idx}>{n.description} {JSON.stringify(n.attributes)}</div>)}
+      <div className='mt-5 grid grid-cols-3'>
+        {nftData.filter(n=>n.name!=='shiba-inu').map((n,idx)=><div key={idx}><NFTCard details={n}/></div>)}
       </div>
     </div>
   )
