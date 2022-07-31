@@ -32,7 +32,7 @@ export const setCart = (items)=>{
 
 export const addItemToCart = (item)=>async(dispatch,getState)=>{
     try {
-        dispatch(setLoading(true));
+        dispatch(setLoading(item._id));
         const result = await addItemToCartAPI(item._id);
         // console.log(result.data);
         dispatch(addItemToCartState(item));
@@ -61,7 +61,7 @@ export const fetchAllCartItems = ()=>async(dispatch,getState)=>{
 
 export const removeItemFromCart = (item)=>async(dispatch,getState)=>{
     try {
-        dispatch(setLoading(true));
+        dispatch(setLoading(item._id));
         const result = await removeCartItemAPI(item._id);
         // console.log(result.data);
         dispatch(removeItemFromCartState(item));

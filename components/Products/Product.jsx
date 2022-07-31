@@ -54,7 +54,7 @@ const Product = ({productDetails}) => {
                 <div className=""><strike>₹{productDetails.cost+5000}</strike></div>
                 <div className="text-green-400   font-semibold ">56% Off</div>
             </div>
-            <button disabled={loading} className=" mt-7 py-2 text-white cursor-pointer px-8 bg-flipkartBlue disabled:opacity-75 w-fit rounded-sm" onClick={handleCart}>{loading?'Loading...':isIncluded?'Remove from Cart':'Add to Cart'}</button>
+            <button disabled={(typeof(loading)==='string'&&loading===productDetails._id)} className=" mt-7 py-2 text-white cursor-pointer px-8 bg-flipkartBlue disabled:opacity-75 w-fit rounded-sm" onClick={handleCart}>{(typeof(loading)==='string'&&loading===productDetails._id)?'Loading...':isIncluded?'Remove from Cart':'Add to Cart'}</button>
 
         </div>
       </div>
